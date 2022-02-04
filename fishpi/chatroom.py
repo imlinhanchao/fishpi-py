@@ -10,11 +10,11 @@ class ChatRoom(Base):
         :param page: 消息页码
         """
         rsp = self.json(f'/chat-room/more?page={page}&apiKey={self.apiKey}')
-        for i, d in rsp['data']:
+        for i, d in enumerate(rsp['data']):
             try:
                 rsp['data'][i]['sysMetal'] = self.toMetal(d['sysMetal'])
                 redpacket = json.loads(d['content'])
-                if redpacket['msgType'] is not 'redPacket':
+                if redpacket['msgType'] != 'redPacket':
                     return rsp
                 redpacket['recivers'] = json.loads(redpacket['recivers'])
                 rsp['data'][i]['content'] = redpacket

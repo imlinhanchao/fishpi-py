@@ -16,7 +16,7 @@ class Base(object):
     def setToken(self, apiKey):
         self.apiKey = apiKey
 
-    def json(self, url, data=...):
+    def json(self, url, data=None):
         if data is None:
             return requests.get(url=DOMAIN + url, headers=HEADERS).json()
 
@@ -30,7 +30,7 @@ class Base(object):
     def get(self, url):
         return requests.get(url=DOMAIN + url, headers=HEADERS).text
 
-    def post(self, url, data=..., files=...):
+    def post(self, url, data=None, files=None):
         return requests.post(url=DOMAIN + url, data=data, files=files).json()
 
     @staticmethod

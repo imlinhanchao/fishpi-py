@@ -8,12 +8,12 @@ from .__fishpi__ import Base
 
 class FishPi(Base):
     def __init__(self, apiKey=''):
-        Base.__init__(self, apiKey)
         self.chatroom = ChatRoom(apiKey)
+        Base.__init__(self, apiKey)
 
     def setToken(self, apiKey):
         Base.setToken(self, apiKey)
-        self.chatroom.setToken(self, apiKey)
+        self.chatroom.setToken(apiKey)
 
     def login(self, username:str, passwd:str):
         """登录账号返回 API Key
@@ -40,8 +40,8 @@ class FishPi(Base):
         :class:`FishPi <fishpi.FishPi>`.
         :param username: 用户登录用户名/邮箱.
         """
-        rsp = self.json(url=f'/user/${username}?apiKey={self.apiKey}')
-        rsp['data']['sysMetal'] = self.toMetal(rsp['data']['sysMetal'])
+        rsp = self.json(url=f'/user/{username}?apiKey={self.apiKey}')
+        rsp['sysMetal'] = self.toMetal(rsp['sysMetal'])
         return rsp
         
     def names(self, name:str):
