@@ -1,8 +1,13 @@
 import json
+import ssl
+import rel
 import threading
 import time
 import websocket
 from .__fishpi__ import DOMAIN, Base
+
+
+rel.safe_read()
 
 
 class SetInterval:
@@ -59,7 +64,6 @@ class ChatRoom(Base):
         self.__ws_timer = None
         self.__ws = None
         self.__onlines = []
-        self.ws_auto_reconnect = True
         self.redpacket = redpacket if redpacket is not None else RedPacket(
             apiKey)
         Base.__init__(self, apiKey)
@@ -137,7 +141,6 @@ class ChatRoom(Base):
 
     def exit_ws(self):
         """ 关闭聊天室 WebSocket"""
-        self.ws_auto_reconnect = False
         if self.__ws is not None:
             self.__ws.close()
         self.__ws = None
@@ -165,26 +168,22 @@ class ChatRoom(Base):
             for call in self.__ws_calls:
                 call(data)
 
-        '''错误后关闭连接并等待触发重连'''
         def on_error(ws, error):
             self.__ws_last_error = error
-            ws.close()
 
-        '''关闭后一分钟后自动重新连接'''
         def on_close(ws, close_status_code, close_msg):
-            if self.ws_auto_reconnect:
-                threading.Timer(60, lambda: self.__ws_init__())
+            pass
 
         def on_open(ws):
             if self.__ws_timer is not None:
                 self.__ws_timer.cancel()
             self.__ws_timer = SetInterval(180, lambda: self.__ws.send("-hb-"))
 
-        self.ws_auto_reconnect = True
         websocket.enableTrace(False)
         self.__ws = websocket.WebSocketApp(f'wss://{DOMAIN}/chat-room-channel?apiKey={self.apiKey}',
                                            on_open=on_open,
                                            on_message=on_message,
                                            on_error=on_error,
                                            on_close=on_close)
-        self.__ws.run_forever()
+        self.__ws.run_forever(dispatcher=rel, sslopt={
+                              "cert_reqs": ssl.CERT_NONE})

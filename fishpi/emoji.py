@@ -192,7 +192,7 @@ class Emoji(Base):
         """获取用户自定义表情"""
         if self.apiKey == '':
             return []
-        return json.loads(self.json('api/cloud/get', {
+        return json.loads(self.json('/api/cloud/get', {
             'gameId': 'emojis',
             'apiKey': self.apiKey
         })['data'])
