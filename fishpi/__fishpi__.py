@@ -27,6 +27,14 @@ class Base(object):
 
         return requests.post(url=DOMAIN + url, headers=headers, data=json.dumps(data)).json()
 
+    def delete(self, url, data):
+        headers = {
+            **HEADERS,
+            'Content-Type': 'application/json'
+        }
+
+        return requests.delete(url=DOMAIN + url, headers=headers, data=json.dumps(data)).json()
+
     def get(self, url):
         return requests.get(url=DOMAIN + url, headers=HEADERS).text
 
