@@ -1,5 +1,4 @@
 import json
-import signal
 import threading
 import time
 import websocket
@@ -24,17 +23,18 @@ class SetInterval:
     def cancel(self):
         self.stopEvent.set()
 
+
 class RedPacket(Base):
     def open(self, oId):
         """ 打开红包
         `oId`: 红包消息 Id
         """
-        return self.json(f'chat-room/red-packet/open', {
+        return self.json(f'/chat-room/red-packet/open', {
             'oId': oId,
             'apiKey': self.apiKey
         })
 
-    def send(self, msg:str, redpacket_type:str='random', money:int=32, count:int=1, recivers:list=[]):
+    def send(self, msg: str, redpacket_type: str = 'random', money: int = 32, count: int = 1, recivers: list = []):
         """ 发送一条红包消息
         `redpacket_type`: 红包类型 `random`(拼手气), `average`(平均), 
         `specify`(专属), `heartbeat`(心跳),
@@ -60,7 +60,8 @@ class ChatRoom(Base):
         self.__ws = None
         self.__onlines = []
         self.ws_auto_reconnect = True
-        self.redpacket = redpacket if redpacket is not None else RedPacket(apiKey)
+        self.redpacket = redpacket if redpacket is not None else RedPacket(
+            apiKey)
         Base.__init__(self, apiKey)
 
     def setToken(self, apiKey):
