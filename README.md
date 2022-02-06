@@ -27,7 +27,7 @@ rsp = fish.login(
     username='username', 
     passwd='password123456'
 )
-if rsp.code == 0:
+if rsp['code'] == 0:
     apiKey = rsp.Key
 
 # 通过 apiKey 获取登录用户信息
@@ -40,16 +40,16 @@ emojis = fish.emoji.get()
 defaultEmoji = fish.emoji.default
 
 # 监听聊天室消息
-fish.chatroom.addListener(lambda ev: print(ev['msg']))
+fish.chatroom.addListener(lambda msg: print(msg))
 # 向聊天室发送信息（需要登录）
 fish.chatroom.send('Hello World!')
 # 向聊天室发送红包
 fish.chatroom.redpacket.send(
-    type='random';
-    money=32;
-    count=2;
-    msg='摸鱼者，事竟成！';
-    recivers=[];
+    type='random',
+    money=32,
+    count=2,
+    msg='摸鱼者，事竟成！',
+    recivers=[]
 )
 
 ```

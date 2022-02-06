@@ -34,7 +34,7 @@ class RedPacket(Base):
             'apiKey': self.apiKey
         })
 
-    def send(self, msg: str, redpacket_type: str = 'random', money: int = 32, count: int = 1, recivers: list = []):
+    def send(self, msg: str, type: str = 'random', money: int = 32, count: int = 1, recivers: list = []):
         """ 发送一条红包消息
         `redpacket_type`: 红包类型 `random`(拼手气), `average`(平均), 
         `specify`(专属), `heartbeat`(心跳),
@@ -44,7 +44,7 @@ class RedPacket(Base):
         `recivers`: 红包接收者，专属红包有效
         """
         redpacket = {
-            'type': redpacket_type,
+            'type': type,
             'money': money,
             'count': count,
             'msg': msg,
