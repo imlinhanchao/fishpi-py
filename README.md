@@ -1,8 +1,6 @@
 # 摸鱼派 API Package
 摸鱼派社区 (https://fishpi.cn/) 的 API Package，可以快速开发出一款应用支援社区功能。
 
-> *开发中，未完成。
-
 ## 支援
 - 用户信息；
 - 聊天室；
