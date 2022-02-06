@@ -24,15 +24,48 @@ class SetInterval:
     def cancel(self):
         self.stopEvent.set()
 
+class RedPacket(Base):
+    def open(self, oId):
+        """ 打开红包
+        `oId`: 红包消息 Id
+        """
+        return self.json(f'chat-room/red-packet/open', {
+            'oId': oId,
+            'apiKey': self.apiKey
+        })
+
+    def send(self, msg:str, redpacket_type:str='random', money:int=32, count:int=1, recivers:list=[]):
+        """ 发送一条红包消息
+        `redpacket_type`: 红包类型 `random`(拼手气), `average`(平均), 
+        `specify`(专属), `heartbeat`(心跳),
+        `money`: 红包的积分数，最少 32
+        `count`: 红包的个数
+        `msg`: 红包祝福语
+        `recivers`: 红包接收者，专属红包有效
+        """
+        redpacket = {
+            'type': redpacket_type,
+            'money': money,
+            'count': count,
+            'msg': msg,
+            'recivers': recivers
+        }
+        return ChatRoom(self.apiKey, self).send(f'[redpacket]{json.dumps(redpacket)}[/redpacket]')
+
 
 class ChatRoom(Base):
-    def __init__(self, apiKey=''):
+    def __init__(self, apiKey='', redpacket=None):
         self.__ws_calls = []
         self.__ws_timer = None
         self.__ws = None
         self.__onlines = []
         self.ws_auto_reconnect = True
+        self.redpacket = redpacket if redpacket is not None else RedPacket(apiKey)
         Base.__init__(self, apiKey)
+
+    def setToken(self, apiKey):
+        Base.setToken(self, apiKey)
+        self.redpacket.setToken(apiKey)
 
     @property
     def onlines(self):
@@ -145,9 +178,6 @@ class ChatRoom(Base):
             if self.__ws_timer is not None:
                 self.__ws_timer.cancel()
             self.__ws_timer = SetInterval(180, lambda: self.__ws.send("-hb-"))
-
-        signal.signal(signal.SIGINT, lambda: self.exit_ws())
-        signal.signal(signal.SIGTERM, lambda: self.exit_ws())
 
         self.ws_auto_reconnect = True
         websocket.enableTrace(False)

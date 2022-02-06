@@ -1,11 +1,11 @@
 import json
 import requests
 
-DOMAIN = 'https://fishpi.cn'
+DOMAIN = 'fishpi.cn'
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-    'Referer': DOMAIN,
+    'Referer': f'https://{DOMAIN}',
 }
 
 
@@ -18,14 +18,14 @@ class Base(object):
 
     def json(self, url, data=None):
         if data is None:
-            return requests.get(url=DOMAIN + url, headers=HEADERS).json()
+            return requests.get(url=f'https://{DOMAIN}{url}', headers=HEADERS).json()
 
         headers = {
             **HEADERS,
             'Content-Type': 'application/json'
         }
 
-        return requests.post(url=DOMAIN + url, headers=headers, data=json.dumps(data)).json()
+        return requests.post(url=f'https://{DOMAIN}{url}', headers=headers, data=json.dumps(data)).json()
 
     def delete(self, url, data):
         headers = {
@@ -33,13 +33,13 @@ class Base(object):
             'Content-Type': 'application/json'
         }
 
-        return requests.delete(url=DOMAIN + url, headers=headers, data=json.dumps(data)).json()
+        return requests.delete(url=f'https://{DOMAIN}{url}', headers=headers, data=json.dumps(data)).json()
 
     def get(self, url):
-        return requests.get(url=DOMAIN + url, headers=HEADERS).text
+        return requests.get(url=f'https://{DOMAIN}{url}', headers=HEADERS).text
 
     def post(self, url, data=None, files=None):
-        return requests.post(url=DOMAIN + url, data=data, files=files).json()
+        return requests.post(url=f'https://{DOMAIN}{url}', data=data, files=files).json()
 
     @staticmethod
     def toMetal(sysMetal:str):
