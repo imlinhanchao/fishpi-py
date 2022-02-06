@@ -3,9 +3,10 @@ from unicodedata import name
 import hashlib
 
 from .__fishpi__ import Base
-from .emoji import Emoji
-from .user import User
 from .chatroom import ChatRoom
+from .user import User
+from .emoji import Emoji
+from .notice import Notice
 
 
 class FishPi(Base):
@@ -13,6 +14,7 @@ class FishPi(Base):
         self.chatroom = ChatRoom(apiKey)
         self.account = User(apiKey)
         self.emoji = Emoji(apiKey)
+        self.notice = Notice(apiKey)
         Base.__init__(self, apiKey)
 
     def setToken(self, apiKey):
@@ -20,6 +22,7 @@ class FishPi(Base):
         self.chatroom.setToken(apiKey)
         self.account.setToken(apiKey)
         self.emoji.setToken(apiKey)
+        self.notice.setToken(apiKey)
 
     def login(self, username: str, passwd: str):
         """登录账号返回 API Key
