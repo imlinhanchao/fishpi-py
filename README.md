@@ -23,7 +23,8 @@ apiKey = ''
 fish = FishPi()
 rsp = fish.login(
     username='username', 
-    passwd='password123456'
+    passwd='password123456',
+    mfaCode='789546'
 )
 if rsp['code'] == 0:
     apiKey = rsp.Key
@@ -47,7 +48,6 @@ fish.chatroom.redpacket.send(
     money=32,
     count=2,
     msg='摸鱼者，事竟成！',
-    recivers=[]
 )
 
 ```

@@ -30,23 +30,25 @@ class SetInterval:
 
 
 class RedPacket(Base):
-    def open(self, oId):
+    def open(self, oId, gesture=''):
         """ 打开红包
         `oId`: 红包消息 Id
+        `gesture`: 猜拳类型，仅打开猜拳红包需要
         """
         return self.json(f'/chat-room/red-packet/open', {
             'oId': oId,
             'apiKey': self.apiKey
         })
 
-    def send(self, msg: str, type: str = 'random', money: int = 32, count: int = 1, recivers: list = []):
+    def send(self, msg: str, type: str = 'random', money: int = 32, count: int = 1, recivers: list = [], gesture: str = ''):
         """ 发送一条红包消息
         `redpacket_type`: 红包类型 `random`(拼手气), `average`(平均), 
-        `specify`(专属), `heartbeat`(心跳),
+        `specify`(专属), `heartbeat`(心跳), `rockPaperScissors`(猜拳),
         `money`: 红包的积分数，最少 32
         `count`: 红包的个数
         `msg`: 红包祝福语
         `recivers`: 红包接收者，专属红包有效
+        `gesture`: 猜拳类型, 0 - 拳头, 1 - 剪刀, 2 - 布，猜拳红包有效
         """
         redpacket = {
             'type': type,
@@ -64,6 +66,7 @@ class ChatRoom(Base):
         self.__ws_timer = None
         self.__ws = None
         self.__onlines = []
+        self.__discusse = ''
         self.redpacket = redpacket if redpacket is not None else RedPacket(
             apiKey)
         Base.__init__(self, apiKey)
@@ -76,6 +79,11 @@ class ChatRoom(Base):
     def onlines(self):
         """当前聊天室在线人员，添加监听后生效"""
         return self.__onlines
+
+    @property
+    def discusse(self):
+        """当前聊天室话题，添加监听后生效"""
+        return self.__discusse
 
     def more(self, page=1):
         """查询聊天室历史消息
@@ -151,8 +159,12 @@ class ChatRoom(Base):
             data = None
             if msg['type'] == 'online':
                 data = self.__onlines = msg['users']
+                self.__discusse = msg['discussing']
             elif msg['type'] == 'revoke':
                 data = msg
+            elif msg['type'] == 'discussChanged':
+                data = msg['newDiscuss']
+                self.__discusse = msg['newDiscuss']
             elif msg['type'] == 'msg':
                 data = msg
                 try:

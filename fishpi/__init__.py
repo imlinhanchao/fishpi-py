@@ -24,7 +24,7 @@ class FishPi(Base):
         self.emoji.setToken(apiKey)
         self.notice.setToken(apiKey)
 
-    def login(self, username: str, passwd: str):
+    def login(self, username: str, passwd: str, mfaCode=''):
         """登录账号返回 API Key
         通过账密登录摸鱼派获取 API Key，用于调用其它 API。API Key 长期有效，直到服务端重启。
         `username`: 用户登录用户名/邮箱.
@@ -34,7 +34,8 @@ class FishPi(Base):
         hash.update(passwd.encode(encoding='utf-8'))
         rsp = self.json(url='/api/getKey', data={
             'nameOrEmail': username,
-            'userPassword': hash.hexdigest()
+            'userPassword': hash.hexdigest(),
+            'mfaCode': mfaCode
         })
 
         if rsp['code'] == 0:
