@@ -39,7 +39,7 @@ emojis = fish.emoji.get()
 defaultEmoji = fish.emoji.default
 
 # 监听聊天室消息
-fish.chatroom.addListener(lambda msg: print(msg))
+fish.chatroom.add_listener(lambda msg: print(msg))
 # 向聊天室发送信息（需要登录）
 fish.chatroom.send('Hello World!')
 # 向聊天室发送红包
